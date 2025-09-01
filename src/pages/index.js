@@ -146,7 +146,7 @@ export default function Home() {
           if (T_num <= 0 || Tc_num <= 0 || Pc_num <= 0 || M_num <= 0) {
             throw new Error("Inputs must be positive.");
           }
-          const R = Ru / M_num;
+          const R = Ru;
           const a = (27 * R ** 2 * Tc_num ** 2) / (64 * Pc_num);
           const b = (R * Tc_num) / (8 * Pc_num);
           const A = (a * P_num) / (R ** 2 * T_num ** 2);
