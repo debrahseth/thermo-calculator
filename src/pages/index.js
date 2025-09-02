@@ -37,29 +37,169 @@ export default function Home() {
 
   const getGasProperties = (gas) => {
     const properties = {
-      Methane: { Tc: 190.56, Pc: 4599.2, Vc: 0.09836, M: 16.04, w: 0.0115 },
-      Ethane: { Tc: 305.23, Pc: 4872, Vc: 0.1455, M: 30.07, w: 0.0995 },
-      Propane: { Tc: 369.83, Pc: 4260, Vc: 0.1998, M: 44.1, w: 0.1523 },
-      Pentane: { Tc: 469.7, Pc: 3370, Vc: 0.304, M: 72.15, w: 0.251 },
-      CarbonDioxide: { Tc: 304.12, Pc: 7380, Vc: 0.0943, M: 44.01, w: 0.2239 },
-      Ethylene: { Tc: 282.35, Pc: 5040, Vc: 0.1242, M: 28.052, w: 0.087 },
-      Air: { Tc: 132.5, Pc: 3770, Vc: 0.0883, M: 28.97, w: 0.0335 },
-      Ammonia: { Tc: 405.5, Pc: 1128, Vc: 0.0724, M: 17.03, w: 0.256 },
-      Argon: { Tc: 151, Pc: 4860, Vc: 0.0749, M: 39.948, w: 0.001 },
-      Benzene: { Tc: 562, Pc: 4920, Vc: 0.2603, M: 78.115, w: 0.212 },
-      Butane: { Tc: 452.5, Pc: 3796, Vc: 0.2547, M: 58.124, w: 0.2 },
-      CarbonMonoxide: { Tc: 133, Pc: 3500, Vc: 0.093, M: 28.011, w: 0.0497 },
-      "Ethyl Alcohol": { Tc: 516, Pc: 6380, Vc: 0.1673, M: 46.07, w: 0.644 },
-      Helium: { Tc: 5.3, Pc: 230, Vc: 0.0578, M: 4.003, w: -0.3835 },
-      Hexane: { Tc: 507.9, Pc: 3030, Vc: 0.3677, M: 86.179, w: 0.3 },
-      Hydrogen: { Tc: 33.3, Pc: 1300, Vc: 0.0649, M: 2.016, w: -0.219 },
-      "Methyl Alcohol": { Tc: 513.2, Pc: 7950, Vc: 0.118, M: 32.042, w: 0.556 },
-      Nitrogen: { Tc: 126.2, Pc: 3390, Vc: 0.0899, M: 28.013, w: 0.04 },
-      Oxygen: { Tc: 154.8, Pc: 5080, Vc: 0.078, M: 31.999, w: 0.022 },
-      Propylene: { Tc: 365, Pc: 4620, Vc: 0.181, M: 42.081, w: 0.144 },
-      Water: { Tc: 647.1, Pc: 22060, Vc: 0.056, M: 18.015, w: 0.344 },
-      Cyclohexane: { Tc: 553.64, Pc: 4070, Vc: 0.308, M: 84.16, w: 0.212 },
-      Acetone: { Tc: 508.1, Pc: 4760, Vc: 0.209, M: 58.08, w: 0.304 },
+      Methane: {
+        Tc: 190.56,
+        Pc: 4599.2,
+        Vc: 0.09836,
+        M: 16.04,
+        w: 0.0115,
+        R: 0.5183,
+      },
+      Ethane: {
+        Tc: 305.23,
+        Pc: 4872,
+        Vc: 0.1455,
+        M: 30.07,
+        w: 0.0995,
+        R: 0.2765,
+      },
+      Propane: {
+        Tc: 369.83,
+        Pc: 4260,
+        Vc: 0.1998,
+        M: 44.1,
+        w: 0.1523,
+        R: 0.1885,
+      },
+      Pentane: {
+        Tc: 469.7,
+        Pc: 3370,
+        Vc: 0.304,
+        M: 72.15,
+        w: 0.251,
+        R: 0.1153,
+      },
+      CarbonDioxide: {
+        Tc: 304.12,
+        Pc: 7380,
+        Vc: 0.0943,
+        M: 44.01,
+        w: 0.2239,
+        R: 0.1889,
+      },
+      Ethylene: {
+        Tc: 282.35,
+        Pc: 5040,
+        Vc: 0.1242,
+        M: 28.052,
+        w: 0.087,
+        R: 0.2964,
+      },
+      Air: { Tc: 132.5, Pc: 3770, Vc: 0.0883, M: 28.97, w: 0.0335, R: 0.28698 },
+      Ammonia: {
+        Tc: 405.5,
+        Pc: 1128,
+        Vc: 0.0724,
+        M: 17.03,
+        w: 0.256,
+        R: 0.4882,
+      },
+      Argon: { Tc: 151, Pc: 4860, Vc: 0.0749, M: 39.948, w: 0.001, R: 0.20812 },
+      Benzene: {
+        Tc: 562,
+        Pc: 4920,
+        Vc: 0.2603,
+        M: 78.115,
+        w: 0.212,
+        R: 0.10643,
+      },
+      Butane: {
+        Tc: 452.5,
+        Pc: 3796,
+        Vc: 0.2547,
+        M: 58.124,
+        w: 0.2,
+        R: 0.14304,
+      },
+      CarbonMonoxide: {
+        Tc: 133,
+        Pc: 3500,
+        Vc: 0.093,
+        M: 28.011,
+        w: 0.0497,
+        R: 0.29681,
+      },
+      "Ethyl Alcohol": {
+        Tc: 516,
+        Pc: 6380,
+        Vc: 0.1673,
+        M: 46.07,
+        w: 0.644,
+        R: 0.18046,
+      },
+      Helium: { Tc: 5.3, Pc: 230, Vc: 0.0578, M: 4.003, w: -0.3835, R: 2.0769 },
+      Hexane: {
+        Tc: 507.9,
+        Pc: 3030,
+        Vc: 0.3677,
+        M: 86.179,
+        w: 0.3,
+        R: 0.09647,
+      },
+      Hydrogen: {
+        Tc: 33.3,
+        Pc: 1300,
+        Vc: 0.0649,
+        M: 2.016,
+        w: -0.219,
+        R: 4.124,
+      },
+      "Methyl Alcohol": {
+        Tc: 513.2,
+        Pc: 7950,
+        Vc: 0.118,
+        M: 32.042,
+        w: 0.556,
+        R: 0.25947,
+      },
+      Nitrogen: {
+        Tc: 126.2,
+        Pc: 3390,
+        Vc: 0.0899,
+        M: 28.013,
+        w: 0.04,
+        R: 0.29679,
+      },
+      Oxygen: {
+        Tc: 154.8,
+        Pc: 5080,
+        Vc: 0.078,
+        M: 31.999,
+        w: 0.022,
+        R: 0.25982,
+      },
+      Propylene: {
+        Tc: 365,
+        Pc: 4620,
+        Vc: 0.181,
+        M: 42.081,
+        w: 0.144,
+        R: 0.19757,
+      },
+      Water: {
+        Tc: 647.1,
+        Pc: 22060,
+        Vc: 0.056,
+        M: 18.015,
+        w: 0.344,
+        R: 0.4615,
+      },
+      Cyclohexane: {
+        Tc: 553.64,
+        Pc: 4070,
+        Vc: 0.308,
+        M: 84.16,
+        w: 0.212,
+        R: 0.09879,
+      },
+      Acetone: {
+        Tc: 508.1,
+        Pc: 4760,
+        Vc: 0.209,
+        M: 58.08,
+        w: 0.304,
+        R: 0.14315,
+      },
     };
     return properties[gas] || { Tc: 0, Pc: 0, Vc: 0, M: 0, w: 0 };
   };
@@ -1420,203 +1560,137 @@ export default function Home() {
     if (eos === "A") {
       if (calculation === "1") {
         return (
-          <div className="mt-8 p-6 bg-white rounded-xl shadow-lg">
-            <h3 className="text-2xl font-bold text-indigo-600 mb-4">Results</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">a</span> = {results.a}{" "}
-                  m⁶·kPa/kmol²
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">b</span> = {results.b} m³/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">A</span> = {results.A}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">B</span> = {results.B}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Z</span> = {results.Z}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Zg</span> = {results.Zg}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Zl</span> = {results.Zl}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Vg</span> = {results.Vg}{" "}
-                  m³/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Vl</span> = {results.Vl}{" "}
-                  m³/kmol
-                </p>
-              </div>
+          <div className="mt-10 p-8 bg-gradient-to-br from-white to-indigo-50 rounded-2xl shadow-xl border border-indigo-100">
+            <h3 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center tracking-tight">
+              Results
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { label: "a", value: `${results.a} m⁶·kPa/kmol²` },
+                { label: "b", value: `${results.b} m³/kmol` },
+                { label: "A", value: results.A },
+                { label: "B", value: results.B },
+                { label: "Z", value: results.Z },
+                { label: "Zg", value: results.Zg },
+                { label: "Zl", value: results.Zl },
+                { label: "Vg", value: `${results.Vg} m³/kmol` },
+                { label: "Vl", value: `${results.Vl} m³/kmol` },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-indigo-100"
+                >
+                  <p className="text-gray-800">
+                    <span className="font-semibold text-indigo-600">
+                      {item.label}
+                    </span>{" "}
+                    <span className="ml-2">{item.value}</span>
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         );
       } else if (calculation === "2") {
         return (
-          <div className="mt-8 p-6 bg-white rounded-xl shadow-lg">
-            <h3 className="text-2xl font-bold text-indigo-600 mb-4">Results</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Δh_ideal</span> ={" "}
-                  {results.dh_ideal} kJ/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Δh</span> = {results.dh}{" "}
-                  kJ/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Δs_ideal</span> ={" "}
-                  {results.ds_ideal} kJ/kmol·K
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Δs</span> = {results.ds}{" "}
-                  kJ/kmol·K
-                </p>
-              </div>
-              {results.dh_kg && (
-                <div className="p-4 bg-indigo-50 rounded-lg">
-                  <p className="text-gray-700">
-                    <span className="font-semibold">Δh_kg</span> ={" "}
-                    {results.dh_kg} kJ/kg
-                  </p>
-                </div>
-              )}
+          <div className="mt-10 p-8 bg-gradient-to-br from-white to-indigo-50 rounded-2xl shadow-xl border border-indigo-100">
+            <h3 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center tracking-tight">
+              Thermodynamic Results
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { label: "Δh_ideal", value: `${results.dh_ideal} kJ/kmol` },
+                { label: "Δh", value: `${results.dh} kJ/kmol` },
+                { label: "Δs_ideal", value: `${results.ds_ideal} kJ/kmol·K` },
+                { label: "Δs", value: `${results.ds} kJ/kmol·K` },
+                results.dh_kg && {
+                  label: "Δh_kg",
+                  value: `${results.dh_kg} kJ/kg`,
+                },
+              ]
+                .filter(Boolean)
+                .map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-indigo-100"
+                  >
+                    <p className="text-gray-800">
+                      <span className="font-semibold text-indigo-600">
+                        {item.label}
+                      </span>{" "}
+                      <span className="ml-2">{item.value}</span>
+                    </p>
+                  </div>
+                ))}
             </div>
           </div>
         );
       } else if (calculation === "3") {
         return (
-          <div className="mt-8 p-6 bg-white rounded-xl shadow-lg">
-            <h3 className="text-2xl font-bold text-indigo-600 mb-4">Results</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">a</span> = {results.a}{" "}
-                  m⁶·kPa/kmol²
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">b</span> = {results.b} m³/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">A</span> = {results.A}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">B</span> = {results.B}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Z</span> = {results.Z}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Zg</span> = {results.Zg}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">H_dep</span> = {results.H_dep}{" "}
-                  kJ/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">S_dep</span> = {results.S_dep}{" "}
-                  kJ/kmol·K
-                </p>
-              </div>
+          <div className="mt-10 p-8 bg-gradient-to-br from-white to-indigo-50 rounded-2xl shadow-xl border border-indigo-100">
+            <h3 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center tracking-tight">
+              Results
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { label: "a", value: `${results.a} m⁶·kPa/kmol²` },
+                { label: "b", value: `${results.b} m³/kmol` },
+                { label: "A", value: results.A },
+                { label: "B", value: results.B },
+                { label: "Z", value: results.Z },
+                { label: "Zg", value: results.Zg },
+                { label: "H_dep", value: `${results.H_dep} kJ/kmol` },
+                { label: "S_dep", value: `${results.S_dep} kJ/kmol·K` },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-indigo-100"
+                >
+                  <p className="text-gray-800">
+                    <span className="font-semibold text-indigo-600">
+                      {item.label}
+                    </span>{" "}
+                    <span className="ml-2">{item.value}</span>
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         );
       } else if (calculation === "4") {
         return (
-          <div className="mt-8 p-6 bg-white rounded-xl shadow-lg">
-            <h3 className="text-2xl font-bold text-indigo-600 mb-4">Results</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">a</span> = {results.a}{" "}
-                  m⁶·kPa/kmol²
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">b</span> = {results.b} m³/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">A</span> = {results.A}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">B</span> = {results.B}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Z</span> = {results.Z}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Zg</span> = {results.Zg}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">ln φ</span> = {results.ln_phi}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">φ</span> = {results.phi}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Fugacity</span> ={" "}
-                  {results.fug} kPa
-                </p>
-              </div>
+          <div className="mt-10 p-8 bg-gradient-to-br from-white to-indigo-50 rounded-2xl shadow-xl border border-indigo-100">
+            <h3 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center tracking-tight">
+              Results
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { label: "a", value: `${results.a} m⁶·kPa/kmol²` },
+                { label: "b", value: `${results.b} m³/kmol` },
+                { label: "A", value: results.A },
+                { label: "B", value: results.B },
+                { label: "Z", value: results.Z },
+                { label: "Zg", value: results.Zg },
+                { label: "ln φ", value: results.ln_phi },
+                { label: "φ", value: results.phi },
+                { label: "Fugacity", value: `${results.fug} kPa` },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-indigo-100"
+                >
+                  <p className="text-gray-800">
+                    <span className="font-semibold text-indigo-600">
+                      {item.label}
+                    </span>{" "}
+                    <span className="ml-2">{item.value}</span>
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         );
@@ -1624,261 +1698,289 @@ export default function Home() {
     } else if (eos === "B") {
       if (calculation === "1") {
         return (
-          <div className="mt-8 p-6 bg-white rounded-xl shadow-lg">
-            <h3 className="text-2xl font-bold text-indigo-600 mb-4">Results</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">a</span> = {results.a}{" "}
-                  m⁶·kPa/kmol²
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">b</span> = {results.b} m³/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">A</span> = {results.A}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">B</span> = {results.B}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Z</span> = {results.Z}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Zg</span> = {results.Zg}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Zl</span> = {results.Zl}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Vg</span> = {results.Vg}{" "}
-                  m³/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Vl</span> = {results.Vl}{" "}
-                  m³/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">H_dep</span> = {results.H_dep}{" "}
-                  kJ/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">S_dep</span> = {results.S_dep}{" "}
-                  kJ/kmol·K
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">U_dep</span> = {results.U_dep}{" "}
-                  kJ/kmol
-                </p>
-              </div>
+          <div className="mt-10 p-8 bg-gradient-to-br from-white to-indigo-50 rounded-2xl shadow-xl border border-indigo-100">
+            <h3 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center tracking-tight">
+              Results
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { label: "a", value: `${results.a} m⁶·kPa/kmol²` },
+                { label: "b", value: `${results.b} m³/kmol` },
+                { label: "A", value: results.A },
+                { label: "B", value: results.B },
+                { label: "Z", value: results.Z },
+                { label: "Zg", value: results.Zg },
+                { label: "Zl", value: results.Zl },
+                { label: "Vg", value: `${results.Vg} m³/kmol` },
+                { label: "Vl", value: `${results.Vl} m³/kmol` },
+                { label: "H_dep", value: `${results.H_dep} kJ/kmol` },
+                { label: "S_dep", value: `${results.S_dep} kJ/kmol·K` },
+                { label: "U_dep", value: `${results.U_dep} kJ/kmol` },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-indigo-100"
+                >
+                  <p className="text-gray-800">
+                    <span className="font-semibold text-indigo-600">
+                      {item.label}
+                    </span>{" "}
+                    <span className="ml-2">{item.value}</span>
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         );
       } else if (calculation === "2") {
         return (
-          <div className="mt-8 p-6 bg-white rounded-xl shadow-lg">
-            <h3 className="text-2xl font-bold text-indigo-600 mb-4">Results</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">a</span> = {results.a}{" "}
-                  m⁶·kPa/kmol²
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">b</span> = {results.b} m³/kmol
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">A</span> = {results.A}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">B</span> = {results.B}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Z</span> = {results.Z}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Zg</span> = {results.Zg}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">ln φ</span> = {results.ln_phi}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">φ</span> = {results.phi}
-                </p>
-              </div>
-              <div className="p-4 bg-indigo-50 rounded-lg">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Fugacity</span> ={" "}
-                  {results.fug} kPa
-                </p>
-              </div>
+          <div className="mt-10 p-8 bg-gradient-to-br from-white to-indigo-50 rounded-2xl shadow-xl border border-indigo-100">
+            <h3 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center tracking-tight">
+              Results
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { label: "a", value: `${results.a} m⁶·kPa/kmol²` },
+                { label: "b", value: `${results.b} m³/kmol` },
+                { label: "A", value: results.A },
+                { label: "B", value: results.B },
+                { label: "Z", value: results.Z },
+                { label: "Zg", value: results.Zg },
+                { label: "ln φ", value: results.ln_phi },
+                { label: "φ", value: results.phi },
+                { label: "Fugacity", value: `${results.fug} kPa` },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-indigo-100"
+                >
+                  <p className="text-gray-800">
+                    <span className="font-semibold text-indigo-600">
+                      {item.label}
+                    </span>{" "}
+                    <span className="ml-2">{item.value}</span>
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         );
       }
     } else if (eos === "M") {
       return (
-        <div className="mt-8 p-6 bg-white rounded-xl shadow-lg">
-          <h3 className="text-2xl font-bold text-indigo-600 mb-4">
+        <div className="mt-10 p-8 bg-gradient-to-br from-white to-indigo-50 rounded-2xl shadow-xl border border-indigo-100">
+          <h3 className="text-3xl font-extrabold text-indigo-700 mb-8 text-center tracking-tight">
             Mixture Results
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">Components</span> ={" "}
-                {results.comp}
-              </p>
+
+          <div className="space-y-8">
+            {/* Components */}
+            <div>
+              <h4 className="text-lg font-semibold text-indigo-600 mb-2">
+                Components
+              </h4>
+              <div className="p-5 bg-white rounded-xl shadow-md border border-indigo-100">
+                <p className="text-gray-800">{results.comp}</p>
+              </div>
             </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">a</span> ={" "}
-                {results.a.join(", ")} m⁶·kPa/kmol²
-              </p>
+
+            {/* EOS Parameters (Table for multiple values) */}
+            <div>
+              <h4 className="text-lg font-semibold text-indigo-600 mb-3">
+                EOS Parameters
+              </h4>
+              <div className="overflow-x-auto rounded-xl shadow-md border border-indigo-100">
+                <table className="min-w-full divide-y divide-gray-200 text-sm">
+                  <thead className="bg-indigo-100">
+                    <tr>
+                      <th className="px-4 py-2 text-left font-semibold text-indigo-700">
+                        Parameter
+                      </th>
+                      {(Array.isArray(results.comp)
+                        ? results.comp
+                        : results.comp.split(",")
+                      ).map((c, i) => (
+                        <th
+                          key={i}
+                          className="px-4 py-2 text-center font-semibold text-indigo-700"
+                        >
+                          {c.trim()}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 bg-white">
+                    <tr>
+                      <td className="px-4 py-2 font-medium text-gray-700">
+                        a (m⁶·kPa/kmol²)
+                      </td>
+                      {results.a.map((val, i) => (
+                        <td
+                          key={i}
+                          className="px-4 py-2 text-center text-gray-800"
+                        >
+                          {val}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2 font-medium text-gray-700">
+                        b (m³/kmol)
+                      </td>
+                      {results.b.map((val, i) => (
+                        <td
+                          key={i}
+                          className="px-4 py-2 text-center text-gray-800"
+                        >
+                          {val}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2 font-medium text-gray-700">A</td>
+                      {results.A.map((val, i) => (
+                        <td
+                          key={i}
+                          className="px-4 py-2 text-center text-gray-800"
+                        >
+                          {val}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2 font-medium text-gray-700">B</td>
+                      {results.B.map((val, i) => (
+                        <td
+                          key={i}
+                          className="px-4 py-2 text-center text-gray-800"
+                        >
+                          {val}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2 font-medium text-gray-700">
+                        τᵢ
+                      </td>
+                      {results.tau_i.map((val, i) => (
+                        <td
+                          key={i}
+                          className="px-4 py-2 text-center text-gray-800"
+                        >
+                          {val}
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">b</span> ={" "}
-                {results.b.join(", ")} m³/kmol
-              </p>
+
+            {/* Mixture Properties (Single values in cards) */}
+            <div>
+              <h4 className="text-lg font-semibold text-indigo-600 mb-3">
+                Mixture Properties
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { label: "Z", value: results.Z },
+                  { label: "z_mix", value: results.z_mix },
+                  { label: "z_liquid", value: results.z_liquid },
+                  { label: "a_mix", value: `${results.a_mix} m⁶·kPa/kmol²` },
+                  { label: "b_mix", value: `${results.b_mix} m³/kmol` },
+                  { label: "Amix", value: results.Amix },
+                  { label: "Bmix", value: results.Bmix },
+                  { label: "v_mix", value: `${results.v_mix} m³/kmol` },
+                  { label: "H_dep", value: `${results.H_dep} kJ/kmol` },
+                  { label: "S_dep", value: `${results.S_dep} kJ/kmol·K` },
+                  { label: "Zc_ij", value: results.Zc_ij },
+                  { label: "θ_mix", value: results.theta_mix },
+                ].map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-indigo-100"
+                  >
+                    <p className="text-gray-800">
+                      <span className="font-semibold text-indigo-600">
+                        {item.label}:
+                      </span>{" "}
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">A</span> ={" "}
-                {results.A.join(", ")}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">B</span> ={" "}
-                {results.B.join(", ")}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">τ_i</span> ={" "}
-                {results.tau_i.join(", ")}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">Z</span> = {results.Z}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">z_mix</span> = {results.z_mix}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">z_liquid</span> ={" "}
-                {results.z_liquid}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">a_mix</span> = {results.a_mix}{" "}
-                m⁶·kPa/kmol²
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">b_mix</span> = {results.b_mix}{" "}
-                m³/kmol
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">Amix</span> = {results.Amix}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">Bmix</span> = {results.Bmix}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">v_mix</span> = {results.v_mix}{" "}
-                m³/kmol
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">H_dep</span> = {results.H_dep}{" "}
-                kJ/kmol
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">S_dep</span> = {results.S_dep}{" "}
-                kJ/kmol·K
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">Zc_ij</span> = {results.Zc_ij}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">θ_mix</span> ={" "}
-                {results.theta_mix}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">ln φ_i</span> ={" "}
-                {results.Ln_phai.join(", ")}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">φ_i</span> ={" "}
-                {results.phai.join(", ")}
-              </p>
-            </div>
-            <div className="p-4 bg-indigo-50 rounded-lg">
-              <p className="text-gray-700">
-                <span className="font-semibold">Fugacity</span> ={" "}
-                {results.fug.join(", ")} kPa
-              </p>
+
+            {/* Fugacity Section (Table) */}
+            <div>
+              <h4 className="text-lg font-semibold text-indigo-600 mb-3">
+                Fugacity
+              </h4>
+              <div className="overflow-x-auto rounded-xl shadow-md border border-indigo-100">
+                <table className="min-w-full divide-y divide-gray-200 text-sm">
+                  <thead className="bg-indigo-100">
+                    <tr>
+                      <th className="px-4 py-2 text-left font-semibold text-indigo-700">
+                        Parameter
+                      </th>
+                      {(Array.isArray(results.comp)
+                        ? results.comp
+                        : results.comp.split(",")
+                      ).map((c, i) => (
+                        <th
+                          key={i}
+                          className="px-4 py-2 text-center font-semibold text-indigo-700"
+                        >
+                          {c.trim()}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 bg-white">
+                    <tr>
+                      <td className="px-4 py-2 font-medium text-gray-700">
+                        ln φᵢ
+                      </td>
+                      {results.Ln_phai.map((val, i) => (
+                        <td
+                          key={i}
+                          className="px-4 py-2 text-center text-gray-800"
+                        >
+                          {val}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2 font-medium text-gray-700">
+                        φᵢ
+                      </td>
+                      {results.phai.map((val, i) => (
+                        <td
+                          key={i}
+                          className="px-4 py-2 text-center text-gray-800"
+                        >
+                          {val}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2 font-medium text-gray-700">
+                        Fugacity (kPa)
+                      </td>
+                      {results.fug.map((val, i) => (
+                        <td
+                          key={i}
+                          className="px-4 py-2 text-center text-gray-800"
+                        >
+                          {val}
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -1888,7 +1990,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-100 to-cyan-100 text-gray-900">
       <Head>
         <title>Equation of State Calculator</title>
         <meta
@@ -1898,19 +2000,24 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className="sticky top-0 bg-indigo-600 text-white shadow-md z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Equation of State Calculator</h1>
-          <p className="text-sm">Powered by xAI</p>
+      {/* Header */}
+      <header className="sticky top-0 bg-gradient-to-r from-indigo-600 via-purple-700 to-indigo-900 backdrop-blur-lg text-white shadow-lg z-20 transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-center">
+          <h1 className="text-center text-4xl md:text-5xl font-bold uppercase tracking-wide hover:text-indigo-200 transition-colors">
+            Equation of State Calculator
+          </h1>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6">
+      <main className="max-w-9xl mx-auto px-4 md:px-8 py-10">
+        {/* Input Card */}
+        <div className="bg-white rounded-2xl shadow-2xl p-8 mb-10 border border-indigo-100 hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1">
+          <h2 className="text-3xl font-extrabold text-indigo-800 mb-8">
             Input Parameters
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+          {/* EOS & Calculation Selectors */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <div className="relative">
               <select
                 onChange={(e) => {
@@ -1919,17 +2026,18 @@ export default function Home() {
                   setResults(null);
                   setError("");
                 }}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all appearance-none"
+                className="w-full px-4 py-3 border border-gray-400 rounded-xl bg-white focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all font-semibold text-gray-900"
               >
                 <option value="">Select EOS</option>
                 <option value="A">Van der Waals EOS</option>
                 <option value="B">Peng-Robinson EOS</option>
                 <option value="M">Mixture Calculations</option>
               </select>
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600">
+              <label className="absolute left-3 -top-3 px-2 bg-white text-sm font-semibold text-gray-800">
                 Equation of State
               </label>
             </div>
+
             {eos === "A" && (
               <div className="relative">
                 <select
@@ -1938,7 +2046,7 @@ export default function Home() {
                     setResults(null);
                     setError("");
                   }}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all appearance-none"
+                  className="w-full px-4 py-3 border border-gray-400 rounded-xl bg-white focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all font-semibold text-gray-900"
                 >
                   <option value="">Select Calculation</option>
                   <option value="1">Z, Vg, Vl</option>
@@ -1946,11 +2054,12 @@ export default function Home() {
                   <option value="3">H_dep, S_dep</option>
                   <option value="4">Fugacity</option>
                 </select>
-                <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600">
+                <label className="absolute left-3 -top-3 px-2 bg-white text-sm font-semibold text-gray-800">
                   Calculation Type
                 </label>
               </div>
             )}
+
             {eos === "B" && (
               <div className="relative">
                 <select
@@ -1959,55 +2068,88 @@ export default function Home() {
                     setResults(null);
                     setError("");
                   }}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all appearance-none"
+                  className="w-full px-4 py-3 border border-gray-400 rounded-xl bg-white focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all font-semibold text-gray-900"
                 >
                   <option value="">Select Calculation</option>
                   <option value="1">Z, Vg, Vl, H_dep, S_dep, U_dep</option>
                   <option value="2">Fugacity</option>
                 </select>
-                <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600">
+                <label className="absolute left-3 -top-3 px-2 bg-white text-sm font-semibold text-gray-800">
                   Calculation Type
                 </label>
               </div>
             )}
           </div>
+
+          {/* Dynamic Inputs */}
           {renderInputs()}
+
+          {/* Calculate Button */}
           {eos && (eos === "M" || calculation) && (
             <button
               onClick={handleCalculate}
-              className="mt-6 w-full md:w-auto px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
+              className="mt-6 w-full px-8 py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white text-[20px] font-bold rounded-xl shadow-lg hover:shadow-2xl hover:scale-[1.01] active:scale-95 transition-transform duration-300 animate-pulse-slow"
             >
-              Calculate
+              🚀 Calculate
             </button>
           )}
         </div>
 
+        {/* Error Alert */}
         {error && (
-          <div className="mb-8 p-4 bg-red-50 text-red-700 rounded-lg">
-            <p className="font-semibold">Error: {error}</p>
+          <div className="mb-10 p-5 bg-red-100 border border-red-300 text-red-800 rounded-xl shadow-sm animate-shake">
+            <p className="font-bold">⚠️ Error: {error}</p>
           </div>
         )}
 
+        {/* Results Section */}
         {renderResults()}
 
-        <div className="mt-8 bg-white rounded-xl shadow-lg p-8">
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">
+        {/* Gas Properties Table */}
+        <div className="mt-12 bg-white rounded-2xl shadow-2xl p-8 border border-indigo-200 hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1">
+          <h3 className="text-3xl font-extrabold text-indigo-700 tracking-tight mb-8 flex items-center gap-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-8 h-8 text-indigo-600 animate-bounce-slow"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 8v4l3 3"
+              />
+            </svg>
             Gas Properties
           </h3>
-          <div className="overflow-x-auto">
+
+          <div className="overflow-x-auto rounded-xl border border-gray-300 shadow-inner">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-indigo-100">
-                  <th className="p-3 font-semibold text-gray-700">Gas</th>
-                  <th className="p-3 font-semibold text-gray-700">Tc [K]</th>
-                  <th className="p-3 font-semibold text-gray-700">Pc [kPa]</th>
-                  <th className="p-3 font-semibold text-gray-700">
+                <tr className="bg-gradient-to-r from-indigo-200 to-indigo-300">
+                  <th className="p-4 font-bold text-indigo-900 text-sm tracking-wide">
+                    Gas
+                  </th>
+                  <th className="p-4 font-bold text-indigo-900 text-sm tracking-wide">
+                    Tc [K]
+                  </th>
+                  <th className="p-4 font-bold text-indigo-900 text-sm tracking-wide">
+                    Pc [kPa]
+                  </th>
+                  <th className="p-4 font-bold text-indigo-900 text-sm tracking-wide">
                     Vc [m³/kmol]
                   </th>
-                  <th className="p-3 font-semibold text-gray-700">
+                  <th className="p-4 font-bold text-indigo-900 text-sm tracking-wide">
                     M [kg/kmol]
                   </th>
-                  <th className="p-3 font-semibold text-gray-700">ω</th>
+                  <th className="p-4 font-bold text-indigo-900 text-sm tracking-wide">
+                    ω
+                  </th>
+                  <th className="p-4 font-bold text-indigo-900 text-sm tracking-wide">
+                    R [kJ/kg.K]
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -2016,16 +2158,17 @@ export default function Home() {
                   return (
                     <tr
                       key={index}
-                      className={`border-b hover:bg-indigo-50 transition-colors ${
-                        index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                      className={`border-b border-gray-200 transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:bg-indigo-50 ${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-100"
                       }`}
                     >
-                      <td className="p-3">{gas}</td>
-                      <td className="p-3">{props.Tc}</td>
-                      <td className="p-3">{props.Pc}</td>
-                      <td className="p-3">{props.Vc}</td>
-                      <td className="p-3">{props.M}</td>
-                      <td className="p-3">{props.w}</td>
+                      <td className="p-4 font-semibold text-gray-900">{gas}</td>
+                      <td className="p-4 text-gray-800">{props.Tc}</td>
+                      <td className="p-4 text-gray-800">{props.Pc}</td>
+                      <td className="p-4 text-gray-800">{props.Vc}</td>
+                      <td className="p-4 text-gray-800">{props.M}</td>
+                      <td className="p-4 text-gray-800">{props.w}</td>
+                      <td className="p-4 text-gray-800">{props.R}</td>
                     </tr>
                   );
                 })}
@@ -2034,6 +2177,56 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      {/* Animations */}
+      <style jsx>{`
+        @keyframes pulse-slow {
+          0%,
+          100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.02);
+          }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 2s infinite;
+        }
+        @keyframes bounce-slow {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-5px);
+          }
+        }
+        .animate-bounce-slow {
+          animation: bounce-slow 3s infinite;
+        }
+        @keyframes shake {
+          10%,
+          90% {
+            transform: translateX(-2px);
+          }
+          20%,
+          80% {
+            transform: translateX(4px);
+          }
+          30%,
+          50%,
+          70% {
+            transform: translateX(-8px);
+          }
+          40%,
+          60% {
+            transform: translateX(8px);
+          }
+        }
+        .animate-shake {
+          animation: shake 0.6s;
+        }
+      `}</style>
     </div>
   );
 }
