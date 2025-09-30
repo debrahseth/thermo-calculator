@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import { useState } from "react";
 
@@ -8,10 +9,13 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <header className={styles.hero}>
-        <img
-          src="../.././thermo-banner.png"
+        <Image
+          src="/thermo-banner.png"
           alt="Thermodynamics Banner"
           className={styles.heroImage}
+          width={1200}
+          height={400}
+          priority
         />
         <h1 className={styles.title}>Welcome to Thermodynamics Learning Hub</h1>
         <p className={styles.typewriter}>
@@ -20,9 +24,9 @@ export default function Home() {
 
         <p className={styles.subtitleExtra}>
           Learn faster with interactive tools, step-by-step guidance, and clear
-          visual explanations. Whether you're exploring the first law of
-          thermodynamics or delving into entropy calculations, we've got you
-          covered!
+          visual explanations. Whether you&apos;re exploring the first law of
+          thermodynamics or delving into entropy calculations, we&apos;ve got
+          you covered!
         </p>
       </header>
 
@@ -32,10 +36,12 @@ export default function Home() {
           onClick={() => setShowMessage(true)}
           title="This part is still under construction"
         >
-          <img
-            src="../.././thermo1.png"
+          <Image
+            src="/thermo1.png"
             alt="Thermo One"
             className={styles.cardImage}
+            width={400}
+            height={300}
           />
           <h2>Thermodynamics 1</h2>
           <p>
@@ -44,10 +50,12 @@ export default function Home() {
         </div>
 
         <Link href="/thermo-two" className={styles.card}>
-          <img
-            src="../.././thermo2.png"
+          <Image
+            src="/thermo2.png"
             alt="Thermo Two"
             className={styles.cardImage}
+            width={400}
+            height={300}
           />
           <h2>Thermodynamics 2</h2>
           <p>
@@ -57,10 +65,12 @@ export default function Home() {
         </Link>
 
         <Link href="/properties" className={styles.card}>
-          <img
-            src="../.././properties.png"
+          <Image
+            src="/properties.png"
             alt="Thermodynamic Properties"
             className={styles.cardImage}
+            width={400}
+            height={300}
           />
           <h2>Properties Table</h2>
           <p>
