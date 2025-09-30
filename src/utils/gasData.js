@@ -31,3 +31,7 @@ export function getGasProperties(gasName) {
   }
   return props;
 }
+
+export function getAllGasData() {
+  return gasData;
+}
