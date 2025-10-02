@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Head from "next/head";
+import { getCpData } from "@/utils/cpRelations";
+import Link from "next/link";
 
 export default function ThermoTwo() {
   const [eos, setEos] = useState("");
@@ -9,19 +11,26 @@ export default function ThermoTwo() {
   const [inputs, setInputs] = useState({});
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
+  const handleReset = () => {
+    setResults(null);
+    setCalculation("");
+    setEos("");
+    setError("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const gases = [
     "Methane",
     "Ethane",
     "Propane",
     "Pentane",
-    "CarbonDioxide",
+    "Carbon Dioxide",
     "Ethylene",
     "Air",
     "Ammonia",
     "Argon",
     "Benzene",
     "Butane",
-    "CarbonMonoxide",
+    "Carbon Monoxide",
     "Ethyl Alcohol",
     "Helium",
     "Hexane",
@@ -69,7 +78,7 @@ export default function ThermoTwo() {
         w: 0.251,
         R: 0.1153,
       },
-      CarbonDioxide: {
+      "Carbon Dioxide": {
         Tc: 304.12,
         Pc: 7380,
         Vc: 0.0943,
@@ -111,7 +120,7 @@ export default function ThermoTwo() {
         w: 0.2,
         R: 0.14304,
       },
-      CarbonMonoxide: {
+      "Carbon Monoxide": {
         Tc: 133,
         Pc: 3500,
         Vc: 0.093,
@@ -201,7 +210,24 @@ export default function ThermoTwo() {
         R: 0.14315,
       },
     };
-    return properties[gas] || { Tc: 0, Pc: 0, Vc: 0, M: 0, w: 0 };
+    return properties[gas] || { Tc: 0, Pc: 0, Vc: 0, M: 0, w: 0, R: 0 };
+  };
+
+  const formatScientific = (num) => {
+    if (num === 0 || !num) return "";
+    const absNum = Math.abs(num);
+    const sign = num < 0 ? "-" : "";
+    let exponent = Math.floor(Math.log10(absNum));
+    let mantissa = absNum / Math.pow(10, exponent);
+    if (mantissa < 1) {
+      mantissa *= 10;
+      exponent -= 1;
+    } else if (mantissa >= 10) {
+      mantissa /= 10;
+      exponent += 1;
+    }
+    mantissa = mantissa.toFixed(4);
+    return `${sign}${mantissa}e${exponent}`;
   };
 
   const solveCubic = (a, b, c, d) => {
@@ -246,15 +272,32 @@ export default function ThermoTwo() {
 
   const handleGasSelect = (index, gasName) => {
     const props = getGasProperties(gasName);
-    setInputs({
-      ...inputs,
-      [`comp${index + 1}`]: gasName,
-      [`Tc${index + 1}`]: props.Tc.toString(),
-      [`Pc${index + 1}`]: props.Pc.toString(),
-      [`Vc${index + 1}`]: props.Vc.toString(),
-      [`M${index + 1}`]: props.M.toString(),
-      [`w${index + 1}`]: props.w.toString(),
-    });
+    const cpProps = getCpData(gasName);
+    if (eos === "M") {
+      setInputs({
+        ...inputs,
+        [`comp${index + 1}`]: gasName,
+        [`Tc${index + 1}`]: props.Tc.toString(),
+        [`Pc${index + 1}`]: props.Pc.toString(),
+        [`Vc${index + 1}`]: props.Vc.toString(),
+        [`M${index + 1}`]: props.M.toString(),
+        [`w${index + 1}`]: props.w.toString(),
+      });
+    } else {
+      setInputs({
+        ...inputs,
+        gas: gasName,
+        Tc: props.Tc.toString(),
+        Pc: props.Pc.toString(),
+        Vc: props.Vc.toString(),
+        M: props.M.toString(),
+        w: props.w.toString(),
+        a: cpProps.a.toString(),
+        b: formatScientific(cpProps.b),
+        c: formatScientific(cpProps.c),
+        d: formatScientific(cpProps.d),
+      });
+    }
   };
 
   const handleCalculate = () => {
@@ -326,7 +369,7 @@ export default function ThermoTwo() {
             z2,
             zs1,
             zs2,
-            Mm,
+            M,
           } = inputs;
           const P1_num = parseFloat(P1);
           const T1_num = parseFloat(T1);
@@ -342,7 +385,7 @@ export default function ThermoTwo() {
           const z2_num = parseFloat(z2);
           const zs1_num = parseFloat(zs1);
           const zs2_num = parseFloat(zs2);
-          const Mm_num = parseFloat(Mm) || 0;
+          const M_num = parseFloat(M) || 0;
           if (
             isNaN(P1_num) ||
             isNaN(T1_num) ||
@@ -373,7 +416,7 @@ export default function ThermoTwo() {
           const ds_ideal = integrate(Cp_entropy, T1_num, T2_num);
           const dh = dh_ideal - Ru * Tc_num * (z2_num - z1_num);
           const ds = ds_ideal - Ru * Tc_num * (zs2_num - zs1_num);
-          const dh_kg = Mm_num > 0 ? dh / Mm_num : null;
+          const dh_kg = M_num > 0 ? dh / M_num : null;
 
           result = {
             name,
@@ -889,23 +932,43 @@ export default function ThermoTwo() {
       if (calculation === "1") {
         return (
           <div className="space-y-6">
-            <div className="relative">
-              <input
-                type="text"
-                name="gas"
-                placeholder="Gas name"
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
-                Gas name
-              </label>
+            <div className="flex space-x-4">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  name="gas"
+                  placeholder="Gas name"
+                  value={inputs.gas || ""}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
+                />
+                <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
+                  Gas name
+                </label>
+              </div>
+              <div className="relative flex-1">
+                <select
+                  onChange={(e) => handleGasSelect(0, e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all appearance-none"
+                >
+                  <option value="">Select to Autofill</option>
+                  {gases.map((gas, idx) => (
+                    <option key={idx} value={gas}>
+                      {gas}
+                    </option>
+                  ))}
+                </select>
+                <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600">
+                  Autofill Gas
+                </label>
+              </div>
             </div>
             <div className="relative">
               <input
                 type="number"
                 name="M"
                 placeholder="Molar mass [kg/kmol]"
+                value={inputs.M || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -918,6 +981,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="P"
                 placeholder="Pressure [kPa]"
+                value={inputs.P || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -930,6 +994,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="T"
                 placeholder="Temperature [K]"
+                value={inputs.T || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -942,6 +1007,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="Tc"
                 placeholder="Critical temperature [K]"
+                value={inputs.Tc || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -954,6 +1020,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="Pc"
                 placeholder="Critical pressure [kPa]"
+                value={inputs.Pc || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -966,71 +1033,43 @@ export default function ThermoTwo() {
       } else if (calculation === "2") {
         return (
           <div className="space-y-6">
-            <div className="relative">
-              <input
-                type="text"
-                name="name"
-                placeholder="Gas name"
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
-                Gas name
-              </label>
-            </div>
-            <div className="relative">
-              <input
-                type="number"
-                name="P1"
-                placeholder="P1 [kPa]"
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
-                P1 [kPa]
-              </label>
-            </div>
-            <div className="relative">
-              <input
-                type="number"
-                name="T1"
-                placeholder="T1 [K]"
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
-                T1 [K]
-              </label>
-            </div>
-            <div className="relative">
-              <input
-                type="number"
-                name="P2"
-                placeholder="P2 [kPa]"
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
-                P2 [kPa]
-              </label>
-            </div>
-            <div className="relative">
-              <input
-                type="number"
-                name="T2"
-                placeholder="T2 [K]"
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
-                T2 [K]
-              </label>
+            <div className="flex space-x-4">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Gas name"
+                  value={inputs.gas || ""}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
+                />
+                <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
+                  Gas name
+                </label>
+              </div>
+              <div className="relative flex-1">
+                <select
+                  onChange={(e) => handleGasSelect(0, e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all appearance-none"
+                >
+                  <option value="">Select to Autofill</option>
+                  {gases.map((gas, idx) => (
+                    <option key={idx} value={gas}>
+                      {gas}
+                    </option>
+                  ))}
+                </select>
+                <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600">
+                  Autofill Gas
+                </label>
+              </div>
             </div>
             <div className="relative">
               <input
                 type="number"
                 name="a"
                 placeholder="Heat capacity constant a"
+                value={inputs.a || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1043,6 +1082,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="b"
                 placeholder="Heat capacity constant b"
+                value={inputs.b || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1055,6 +1095,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="c"
                 placeholder="Heat capacity constant c"
+                value={inputs.c || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1067,6 +1108,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="d"
                 placeholder="Heat capacity constant d"
+                value={inputs.d || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1079,6 +1121,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="Tc"
                 placeholder="Critical temperature [K]"
+                value={inputs.Tc || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1091,6 +1134,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="Pc"
                 placeholder="Critical pressure [kPa]"
+                value={inputs.Pc || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1101,8 +1145,74 @@ export default function ThermoTwo() {
             <div className="relative">
               <input
                 type="number"
+                name="Mm"
+                placeholder="Molar mass [kg/kmol]"
+                value={inputs.M || ""}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
+              />
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
+                Molar mass [kg/kmol]
+              </label>
+            </div>
+            <div className="relative">
+              <input
+                type="number"
+                name="P1"
+                placeholder="P1 [kPa]"
+                value={inputs.P1 || ""}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
+              />
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
+                P1 [kPa]
+              </label>
+            </div>
+            <div className="relative">
+              <input
+                type="number"
+                name="T1"
+                placeholder="T1 [K]"
+                value={inputs.T1 || ""}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
+              />
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
+                T1 [K]
+              </label>
+            </div>
+            <div className="relative">
+              <input
+                type="number"
+                name="P2"
+                placeholder="P2 [kPa]"
+                value={inputs.P2 || ""}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
+              />
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
+                P2 [kPa]
+              </label>
+            </div>
+            <div className="relative">
+              <input
+                type="number"
+                name="T2"
+                placeholder="T2 [K]"
+                value={inputs.T2 || ""}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
+              />
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
+                T2 [K]
+              </label>
+            </div>
+            <div className="relative">
+              <input
+                type="number"
                 name="z1"
                 placeholder="z1 from enthalpy chart"
+                value={inputs.z1 || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1115,6 +1225,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="z2"
                 placeholder="z2 from enthalpy chart"
+                value={inputs.z2 || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1127,6 +1238,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="zs1"
                 placeholder="z1 from entropy chart"
+                value={inputs.zs1 || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1139,6 +1251,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="zs2"
                 placeholder="z2 from entropy chart"
+                value={inputs.zs2 || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1146,40 +1259,48 @@ export default function ThermoTwo() {
                 z2 from entropy chart
               </label>
             </div>
-            <div className="relative">
-              <input
-                type="number"
-                name="Mm"
-                placeholder="Molar mass [kg/kmol] (0 if not needed)"
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
-                Molar mass [kg/kmol] (0 if not needed)
-              </label>
-            </div>
           </div>
         );
       } else if (calculation === "3" || calculation === "4") {
         return (
           <div className="space-y-6">
-            <div className="relative">
-              <input
-                type="text"
-                name="gas"
-                placeholder="Gas name"
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
-              />
-              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
-                Gas name
-              </label>
+            <div className="flex space-x-4">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  name="gas"
+                  placeholder="Gas name"
+                  value={inputs.gas || ""}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
+                />
+                <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
+                  Gas name
+                </label>
+              </div>
+              <div className="relative flex-1">
+                <select
+                  onChange={(e) => handleGasSelect(0, e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all appearance-none"
+                >
+                  <option value="">Select to Autofill</option>
+                  {gases.map((gas, idx) => (
+                    <option key={idx} value={gas}>
+                      {gas}
+                    </option>
+                  ))}
+                </select>
+                <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600">
+                  Autofill Gas
+                </label>
+              </div>
             </div>
             <div className="relative">
               <input
                 type="number"
                 name="P"
                 placeholder="Pressure [kPa]"
+                value={inputs.P || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1192,6 +1313,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="T"
                 placeholder="Temperature [K]"
+                value={inputs.T || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1204,6 +1326,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="Tc"
                 placeholder="Critical temperature [K]"
+                value={inputs.Tc || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1216,6 +1339,7 @@ export default function ThermoTwo() {
                 type="number"
                 name="Pc"
                 placeholder="Critical pressure [kPa]"
+                value={inputs.Pc || ""}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
               />
@@ -1229,23 +1353,43 @@ export default function ThermoTwo() {
     } else if (eos === "B") {
       return (
         <div className="space-y-6">
-          <div className="relative">
-            <input
-              type="text"
-              name="gas"
-              placeholder="Gas name"
-              onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
-            />
-            <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
-              Gas name
-            </label>
+          <div className="flex space-x-4">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                name="gas"
+                placeholder="Gas name"
+                value={inputs.gas || ""}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
+              />
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
+                Gas name
+              </label>
+            </div>
+            <div className="relative flex-1">
+              <select
+                onChange={(e) => handleGasSelect(0, e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all appearance-none"
+              >
+                <option value="">Select to Autofill</option>
+                {gases.map((gas, idx) => (
+                  <option key={idx} value={gas}>
+                    {gas}
+                  </option>
+                ))}
+              </select>
+              <label className="absolute left-3 -top-2.5 px-1 bg-white text-sm text-gray-600">
+                Autofill Gas
+              </label>
+            </div>
           </div>
           <div className="relative">
             <input
               type="number"
               name="Pc"
               placeholder="Critical pressure [kPa]"
+              value={inputs.Pc || ""}
               onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
             />
@@ -1258,6 +1402,7 @@ export default function ThermoTwo() {
               type="number"
               name="Tc"
               placeholder="Critical temperature [K]"
+              value={inputs.Tc || ""}
               onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
             />
@@ -1270,6 +1415,7 @@ export default function ThermoTwo() {
               type="number"
               name="w"
               placeholder="Acentric factor"
+              value={inputs.w || ""}
               onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
             />
@@ -1282,6 +1428,7 @@ export default function ThermoTwo() {
               type="number"
               name="T"
               placeholder="Temperature [K]"
+              value={inputs.T || ""}
               onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
             />
@@ -1294,6 +1441,7 @@ export default function ThermoTwo() {
               type="number"
               name="P"
               placeholder="Pressure [kPa]"
+              value={inputs.P || ""}
               onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
             />
@@ -1344,6 +1492,7 @@ export default function ThermoTwo() {
                   type="number"
                   name="P"
                   placeholder="Pressure [kPa]"
+                  value={inputs.P || ""}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
                 />
@@ -1356,6 +1505,7 @@ export default function ThermoTwo() {
                   type="number"
                   name="T"
                   placeholder="Temperature [K]"
+                  value={inputs.T || ""}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all peer"
                 />
@@ -1776,7 +1926,6 @@ export default function ThermoTwo() {
           </h3>
 
           <div className="space-y-8">
-            {/* Components */}
             <div>
               <h4 className="text-lg font-semibold text-indigo-600 mb-2">
                 Components
@@ -1785,8 +1934,6 @@ export default function ThermoTwo() {
                 <p className="text-gray-800">{results.comp}</p>
               </div>
             </div>
-
-            {/* EOS Parameters (Table for multiple values) */}
             <div>
               <h4 className="text-lg font-semibold text-indigo-600 mb-3">
                 EOS Parameters
@@ -1877,8 +2024,6 @@ export default function ThermoTwo() {
                 </table>
               </div>
             </div>
-
-            {/* Mixture Properties (Single values in cards) */}
             <div>
               <h4 className="text-lg font-semibold text-indigo-600 mb-3">
                 Mixture Properties
@@ -1912,8 +2057,6 @@ export default function ThermoTwo() {
                 ))}
               </div>
             </div>
-
-            {/* Fugacity Section (Table) */}
             <div>
               <h4 className="text-lg font-semibold text-indigo-600 mb-3">
                 Fugacity
@@ -1997,34 +2140,50 @@ export default function ThermoTwo() {
           name="description"
           content="Calculate thermodynamic properties using various equations of state."
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/thermo-banner.png" />
       </Head>
-
-      {/* Header */}
       <header className="sticky top-0 bg-gradient-to-r from-indigo-600 via-purple-700 to-indigo-900 backdrop-blur-lg text-white shadow-lg z-20 transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-center">
-          <h1 className="text-center text-4xl md:text-5xl font-bold uppercase tracking-wide hover:text-indigo-200 transition-colors">
+        <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
+          <h1 className="text-center text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-wide hover:text-indigo-200 transition-colors flex-1">
             Equation of State Calculator
           </h1>
+
+          <Link href="/screen" passHref>
+            <button className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-[#256176] px-6 font-medium text-neutral-50 shadow-lg shadow-neutral-500/20 transition active:scale-95 hover:bg-[#1d4e5e]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </Link>
         </div>
       </header>
 
       <main className="max-w-9xl mx-auto px-4 md:px-8 py-10">
-        {/* Input Card */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 mb-10 border border-indigo-100 hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1">
           <h2 className="text-3xl font-extrabold text-indigo-800 mb-8">
             Input Parameters
           </h2>
-
-          {/* EOS & Calculation Selectors */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <div className="relative">
               <select
+                value={eos}
                 onChange={(e) => {
                   setEos(e.target.value);
                   setCalculation("");
                   setResults(null);
                   setError("");
+                  setInputs("");
                 }}
                 className="w-full px-4 py-3 border border-gray-400 rounded-xl bg-white focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all font-semibold text-gray-900"
               >
@@ -2041,10 +2200,12 @@ export default function ThermoTwo() {
             {eos === "A" && (
               <div className="relative">
                 <select
+                  value={calculation}
                   onChange={(e) => {
                     setCalculation(e.target.value);
                     setResults(null);
                     setError("");
+                    setInputs("");
                   }}
                   className="w-full px-4 py-3 border border-gray-400 rounded-xl bg-white focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all font-semibold text-gray-900"
                 >
@@ -2063,10 +2224,12 @@ export default function ThermoTwo() {
             {eos === "B" && (
               <div className="relative">
                 <select
+                  value={calculation}
                   onChange={(e) => {
                     setCalculation(e.target.value);
                     setResults(null);
                     setError("");
+                    setInputs("");
                   }}
                   className="w-full px-4 py-3 border border-gray-400 rounded-xl bg-white focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all font-semibold text-gray-900"
                 >
@@ -2080,11 +2243,7 @@ export default function ThermoTwo() {
               </div>
             )}
           </div>
-
-          {/* Dynamic Inputs */}
           {renderInputs()}
-
-          {/* Calculate Button */}
           {eos && (eos === "M" || calculation) && (
             <button
               onClick={handleCalculate}
@@ -2094,32 +2253,48 @@ export default function ThermoTwo() {
             </button>
           )}
         </div>
-
-        {/* Error Alert */}
         {error && (
           <div className="mb-10 p-5 bg-red-100 border border-red-300 text-red-800 rounded-xl shadow-sm animate-shake">
             <p className="font-bold">⚠️ Error: {error}</p>
           </div>
         )}
-
-        {/* Results Section */}
-        {renderResults()}
-
-        {/* Gas Properties Table */}
+        {results && (
+          <div className="mt-6 space-y-4">
+            {renderResults()}
+            <button
+              onClick={handleReset}
+              className="w-full px-8 py-4 bg-gradient-to-r from-gray-400 to-gray-500 text-white text-[20px] font-bold rounded-xl shadow-md hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-transform duration-300"
+            >
+              ♻️ Reset
+            </button>
+          </div>
+        )}
         <div className="mt-12 bg-white rounded-2xl shadow-2xl p-8 border border-indigo-200 hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1">
           <h3 className="text-3xl font-extrabold text-indigo-700 tracking-tight mb-8 flex items-center gap-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-8 h-8 text-indigo-600 animate-bounce-slow"
-              fill="none"
+              className="w-8 h-8 text-indigo-600"
               viewBox="0 0 24 24"
-              stroke="currentColor"
+              fill="currentColor"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              <circle cx="6" cy="6" r="3" />
+              <circle cx="18" cy="6" r="3" />
+              <circle cx="12" cy="18" r="3" />
+              <line
+                x1="7.5"
+                y1="7.5"
+                x2="10.5"
+                y2="15.5"
+                stroke="currentColor"
                 strokeWidth="2"
-                d="M12 8v4l3 3"
+              />
+              <line
+                x1="16.5"
+                y1="7.5"
+                x2="13.5"
+                y2="15.5"
+                stroke="currentColor"
+                strokeWidth="2"
               />
             </svg>
             Gas Properties
@@ -2178,7 +2353,6 @@ export default function ThermoTwo() {
         </div>
       </main>
 
-      {/* Animations */}
       <style jsx>{`
         @keyframes pulse-slow {
           0%,
@@ -2200,9 +2374,6 @@ export default function ThermoTwo() {
           50% {
             transform: translateY(-5px);
           }
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 3s infinite;
         }
         @keyframes shake {
           10%,
